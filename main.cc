@@ -28,23 +28,28 @@ vec3 color(const ray& r, hitable *world, int depth)
 
 int main()
 {
-    int nx = 400;
-    int ny = 200;
+    int nx = 600;
+    int ny = 300;
     int ns = 100;
     int max = 255;
 
     std::cout << "P3\n" << nx << " " << ny << "\n" << max << "\n";
 
     hitable *list[5];
-    list[0] = new sphere(vec3(0, 0, -1),        0.5, new lambertian(vec3(0.9, 0.3, 0.1)));
-    list[1] = new sphere(vec3(0, -100.5, -1),   100, new lambertian(vec3(0.3, 0.7, 0.6)));
-    list[2] = new sphere(vec3(1, 0, -1),        0.5, new metal(vec3(0.2, 0.7, 0.1), 0.8));
+    list[0] = new sphere(vec3(0, 0, -1),        0.5, new lambertian(vec3(0.9, 0.2, 0.3)));
+    list[1] = new sphere(vec3(0, -100.5, -1),   100, new lambertian(vec3(0.1, 0.8, 0.4)));
+    list[2] = new sphere(vec3(1, 0, -1),        0.5, new metal(vec3(0.2, 0.6, 0.9), 0.7));
     list[3] = new sphere(vec3(-1, 0, -1),       0.5, new dielectric(1.5));
     list[4] = new sphere(vec3(-1, 0, -1),     -0.45, new dielectric(1.5));
     
     hitable *world = new hitable_list(list, 5);
 
-    camera cam;
+    // cam(look_from, look_at, v_up, fov, aspect)
+    vec3 look_from(3, 3, 2);
+    vec3 look_at(0, 0, -1);
+    float dist2focus = (look_from - look_at).length();
+    float aperture = 1.0;
+    camera cam(look_from, look_at, vec3(0, 1.0, 0), 20, float(nx) / float(ny), aperture, dist2focus);
 
     for (int y = ny - 1; y >= 0; y--) {
         for (int x = 0; x < nx; x++) {
